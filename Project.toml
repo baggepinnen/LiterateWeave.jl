@@ -1,0 +1,8 @@
+name = "LiterateWeave"
+uuid = "43172d54-7163-11e9-1466-ff355c947c6f"
+authors = ["Fredrik Bagge Carlson <baggepinnen@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
+Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
