@@ -13,6 +13,7 @@ Args and kwargs goes to weave(s, args...; kwargs...)
 Try
 ```julia
 literateweave("myfile.jl", doctype="md2pdf")
+literateweave("myfile.jl", doctype="md2pdf", latex_cmd="lualatex")
 ```
 """
 function literateweave(source, args...; kwargs...)
