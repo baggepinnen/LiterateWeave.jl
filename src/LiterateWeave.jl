@@ -15,6 +15,7 @@ Args and kwargs goes to weave(s, args...; kwargs...)
 - Literate docs: https://fredrikekre.github.io/Literate.jl/latest/
 - Filter a line: `#src`
 - Comment in code: `##`
+- `mod=Main` turns of the Weave sandbox. Useful to prevent increasing memory consumption.
 
 Default weave options can be modified, try
 ```julia
@@ -50,7 +51,7 @@ Standard usage:
 ```julia
 literateweave("myfile.jl", doctype="md2pdf", latex_cmd="lualatex")
 literateweave("myfile.jl", weave=notebook)
-page = literateweave("myfile.jl", doctype="md2html"); run(`sensible-browser \$page`)
+page = literateweave("myfile.jl", doctype="md2html", mod=Main); run(`sensible-browser \$page`)
 ```
 """
 function literateweave(source, doctype="md2html", args...; weave=weave, credit=false, kwargs...)
