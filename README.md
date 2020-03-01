@@ -23,7 +23,7 @@ plot(...)
 plot(...)
 ```
 
-- The Juno cell-separator `##` confuses Literate and produces an invalid character which causes Weave to fail.
+- The Juno cell-separator `##` is treated as an inline comment by Literate and does thus not split a cell in the output.
 - Inline latex math is supported using `$x+y$`
 
 ## Why a package
