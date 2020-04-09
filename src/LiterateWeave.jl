@@ -2,7 +2,7 @@ module LiterateWeave
 
 using Literate, Weave
 
-export literateweave, set_chunk_defaults, restore_chunk_defaults
+export literateweave, set_chunk_defaults, restore_chunk_defaults, weave, notebook
 
 """
     literateweave(source, args...; kwargs...)
@@ -49,9 +49,11 @@ set_chunk_defaults(Dict(
 Standard usage:
 ```julia
 literateweave("myfile.jl", doctype="md2pdf", latex_cmd="lualatex")
+literateweave("myfile.jl", weave=notebook)
+page = literateweave("myfile.jl", doctype="md2html"); run(`sensible-browser \$page`)
 ```
 """
-function literateweave(source, args...; kwargs...)
+function literateweave(source, args...; weave=weave, kwargs...)
     tmpname = tempname()
     Literate.markdown(source, tmpname, documenter=false)
     if source[end-1:end] == "jl"
