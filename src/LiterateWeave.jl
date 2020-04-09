@@ -53,9 +53,9 @@ literateweave("myfile.jl", weave=notebook)
 page = literateweave("myfile.jl", doctype="md2html"); run(`sensible-browser \$page`)
 ```
 """
-function literateweave(source, args...; weave=weave, kwargs...)
+function literateweave(source, doctype="md2html", args...; weave=weave, credit=false, kwargs...)
     tmpname = tempname()
-    Literate.markdown(source, tmpname, documenter=false)
+    Literate.markdown(source, tmpname, documenter=false, credit=credit)
     if source[end-1:end] == "jl"
       sourcename = source[1:end-2] * "md"
     else
@@ -65,7 +65,12 @@ function literateweave(source, args...; weave=weave, kwargs...)
     sourcename = joinpath(tmpname,sourcename)
     jmdsource = replace(sourcename,".md"=>".jmd")
     run(`cp $(sourcename) $(jmdsource)`)
-    weave(jmdsource, args...; kwargs...)
+    if doctype == "md2html" && get(kwargs, :template, nothing) == nothing
+      template = joinpath(@__DIR__(), "..", "assets", "html.tpl")
+      weave(jmdsource, args...; template=template, kwargs...)
+    else
+      weave(jmdsource, args...; kwargs...)
+    end
 end
 
 end # module
