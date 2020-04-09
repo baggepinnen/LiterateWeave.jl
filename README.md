@@ -10,9 +10,11 @@ literateweave(source, args...; kwargs...)
 ```
 `args` and `kwargs` goes to `weave(s, args...; kwargs...)`
 
-## Example
+## Examplea
 ```julia
-literateweave("myfile.jl", doctype="md2pdf")
+literateweave("myfile.jl", doctype="md2pdf", latex_cmd="lualatex")
+literateweave("myfile.jl", weave=notebook)
+page = literateweave("myfile.jl", doctype="md2html"); run(`sensible-browser $page`)
 ```
 
 ## Notes
