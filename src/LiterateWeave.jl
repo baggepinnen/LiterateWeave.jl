@@ -66,7 +66,7 @@ function literateweave(source, doctype="md2html", args...; weave=weave, credit=f
     sourcename = joinpath(tmpname,sourcename)
     jmdsource = replace(sourcename,".md"=>".jmd")
     run(`cp $(sourcename) $(jmdsource)`)
-    if doctype == "md2html" && get(kwargs, :template, nothing) == nothing
+    if doctype == "md2html" && get(kwargs, :template, nothing) == nothing && weave == Weave.weave
       template = joinpath(@__DIR__(), "..", "assets", "html.tpl")
       weave(jmdsource, args...; template=template, kwargs...)
     else
