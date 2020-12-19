@@ -2,7 +2,7 @@ module LiterateWeave
 
 using Literate, Weave
 
-export literateweave, set_chunk_defaults, restore_chunk_defaults, weave, notebook
+export literateweave, set_chunk_defaults, restore_chunk_defaults, weave, notebook, literate_preprocess
 
 """
     literateweave(source, args...; kwargs...)
@@ -54,9 +54,9 @@ literateweave("myfile.jl", weave=notebook)
 page = literateweave("myfile.jl", doctype="md2html", mod=Main); run(`sensible-browser \$page`)
 ```
 """
-function literateweave(source, doctype="md2html", args...; weave=weave, credit=false, kwargs...)
+function literateweave(source, doctype="md2html", args...; literatekwargs = (;), weave=weave, credit=false, kwargs...)
     tmpname = tempname()
-    Literate.markdown(source, tmpname, documenter=false, credit=credit)
+    Literate.markdown(source, tmpname; documenter=false, credit=credit, literatekwargs...)
     if source[end-1:end] == "jl"
       sourcename = source[1:end-2] * "md"
     else
@@ -66,12 +66,25 @@ function literateweave(source, doctype="md2html", args...; weave=weave, credit=f
     sourcename = joinpath(tmpname,sourcename)
     jmdsource = replace(sourcename,".md"=>".jmd")
     run(`cp $(sourcename) $(jmdsource)`)
-    if doctype == "md2html" && get(kwargs, :template, nothing) == nothing && weave == Weave.weave
-      template = joinpath(@__DIR__(), "..", "assets", "html.tpl")
-      weave(jmdsource, args...; template=template, kwargs...)
-    else
-      weave(jmdsource, args...; kwargs...)
-    end
+    # if doctype == "md2html" && get(kwargs, :template, nothing) == nothing && weave == Weave.weave
+    #   template = joinpath(@__DIR__(), "..", "assets", "html.tpl")
+    #   weave(jmdsource, args...; template=template, kwargs...)
+    # else
+    # end
+    weave(jmdsource, args...; kwargs...)
+end
+
+function literate_preprocess(x)
+  lines = map(split(x, '\n')) do x
+      if startswith(x, r"\s*##")
+          xnew = match(r"\s*##(.*)", x).captures[1]
+          return "#-\n # $xnew \n"
+      end
+      startswith(x, r"\s*#") && (return "")
+      (startswith(x, "display(current())") || startswith(x, "current() |> display")) && (return "current()\n#-\n")
+      string(x, "\n")
+  end
+  prod(lines)
 end
 
 end # module
