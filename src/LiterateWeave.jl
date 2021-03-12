@@ -55,16 +55,16 @@ page = literateweave("myfile.jl", doctype="md2html", mod=Main); run(`sensible-br
 ```
 """
 function literateweave(source, doctype="md2html", args...; literatekwargs = (;), weave=weave, credit=false, kwargs...)
-    tmpname = tempname()
-    Literate.markdown(source, tmpname; documenter=false, credit=credit, literatekwargs...)
+    tmpdir = mktempdir()
+    Literate.markdown(source, tmpdir; documenter=false, credit=credit, literatekwargs...)
     if source[end-1:end] == "jl"
       sourcename = source[1:end-2] * "md"
     else
       @error "Need .jl file!"
     end
-    sourcename = match(r"(\w+.md)", sourcename)[1]
-    sourcename = joinpath(tmpname,sourcename)
-    jmdsource = replace(sourcename,".md"=>".jmd")
+    sourcename = basename(sourcename)
+    sourcename = joinpath(tmpdir, sourcename)
+    jmdsource = replace(sourcename, ".md"=>".jmd")
     run(`cp $(sourcename) $(jmdsource)`)
     # if doctype == "md2html" && get(kwargs, :template, nothing) == nothing && weave == Weave.weave
     #   template = joinpath(@__DIR__(), "..", "assets", "html.tpl")
